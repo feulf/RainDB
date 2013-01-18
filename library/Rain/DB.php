@@ -21,13 +21,18 @@ class DB {
     protected static $db,          // databases list
                      $link,        // database connection object
                      $link_list;   // database connection object list
+    
+    // report variables
+    protected static $last_query,  // keep the last query
+                     $nquery = 0;
 
     // configurations
     protected static $conf = array(
 
         "config_dir"              => "config/",
         "config_file"             => "db.php",
-        "default_connection_name" => "dev"
+        "default_connection_name" => "dev",
+        "fetch_mode"              => \PDO::FETCH_ASSOC
 
     );
 
@@ -88,22 +93,54 @@ class DB {
         }
 
         // connect
-        self::setup($string, $username, $password, $name, $pdo_options);
+        return self::setup($string, $username, $password, $name, $pdo_options);
 
     }
 
 
+    /**
+    * Execute a query
+    *
+    * @param string $query
+    * @param array $field if you use PDO prepared query here you going to write the field
+    */
+    public static function query($query = null, $field = array()) {
+        try {
+            self::$last_query = $query;
+            self::$nquery++;
+            $statement = self::$link->prepare($query);
+            $statement->execute($field);
+            return $statement;
+        } catch (PDOException $e) {
+            error_reporting("Error!: " . $e->getMessage() . "<br/>", E_USER_ERROR);
+        }
+    }
+    
+    
+    /**
+    * Get one row
+    *
+    * @param string $query
+    * @param array $field
+    * @return array
+    */
+    static function getRow($query = null, $field = array()) {
+        return self::query($query, $field)->fetch(self::$conf['fetch_mode']);
+    }
+    
+    
 
 
     /**
      * Connect to the database
      */
-    static function setup($string, $username, $password, $name ) {
+    public static function setup($string, $username, $password, $name ) {
 
         try {
             self::$link = new \PDO($string, $username, $password);
             self::$link->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_WARNING);
             self::$link_list[$name] = self::$link;  
+            return true;
         } catch (PDOException $e) {
             die("Error!: " . $e->getMessage() . "<br/>");
         }

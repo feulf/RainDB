@@ -10,3 +10,9 @@
 
     // init the database class
     DB::init();
+    
+    
+    DB::query("SHOW DATABASES");
+    
+    $row = DB::getRow("SHOW TABLES");
+    var_dump( $row );
