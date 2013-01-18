@@ -1,6 +1,6 @@
 {
     "name": "rain/DB",
-    "description": "Wrapper class for PDO",
+    "description": "Database class PDO wrapper",
     "authors": [
         {
             "name": "Federico Ulfo",
