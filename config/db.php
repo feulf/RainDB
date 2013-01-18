@@ -7,7 +7,7 @@ $db = array(
         'hostname' => 'localhost',
         'username' => 'root',
         'password' => 'root',
-        'database' => 'rainframework2'
+        'database' => 'rain'
     ),
     //production database (live website)
     'prod' => array(
