@@ -241,6 +241,16 @@ class DB {
             static::$conf[$setting] = $value;
         }
     }
+    
+    
+    
+    /**
+    * Close mysql connection
+    */
+    public static function disconnect() {
+        unset(self::$link);
+    }
+
 
 
 }
