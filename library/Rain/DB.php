@@ -110,8 +110,17 @@ class DB {
         try {
             self::$last_query = $query;
             self::$nquery++;
-            self::$statement = self::$link->prepare($query);
-            self::$statement->execute($field);
+            
+            // if field is declared use the Prepare Statement
+            // to clean the variables
+            if( $field ){
+                self::$statement = self::$link->prepare($query);
+                self::$statement->execute($field);
+            }
+            // if there aren't fields use PDO::query which is faster
+            else{
+                self::$statement = self::$link->query($query);
+            }
             return self::$statement;
         } catch (\PDOException $e) {
             error_reporting("Error!: " . $e->getMessage() . "<br/>", E_USER_ERROR);
