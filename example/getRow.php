@@ -27,6 +27,7 @@
     DB::init();
     
 
+    $group_id=1;
     // getRow
-    $row = DB::getRow("SHOW TABLES");
+    $row = DB::getRow("SELECT `name` FROM `group` WHERE group_id=:group_id", array(":group_id"=>$group_id) );
     var_dump( $row );

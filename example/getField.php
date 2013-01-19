@@ -28,5 +28,5 @@
     
 
     // getField
-    $field = DB::getField("SELECT title FROM content LIMIT 1");
+    $field = DB::getField("SELECT firstname FROM user WHERE user_id=:user_id", array(":user_id"=>1) );
     var_dump( $field );
