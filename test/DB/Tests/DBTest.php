@@ -43,10 +43,23 @@ class DBTest extends PHPUnit_Framework_TestCase
      * Test DB::getRow
      */
     function testGetRow(){
-        $row = DB::getRow("SHOW TABLES");
+        $row = DB::getRow("SHOW DATABASES");
         $this->assertTrue( is_array($row) );
     }
 
+    
+    /**
+     * Test DB::getAll
+     */
+    function testGetAll(){
+        $row = DB::getAll("SHOW DATABASES");
+        $this->assertTrue( is_array($row) && isset($row[0]) );
+    }
+
+
+    /**
+     * Config the database
+     */
     function config(){
         $config = array(
             'config_dir' => 'config/',
