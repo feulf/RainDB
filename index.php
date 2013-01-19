@@ -41,3 +41,8 @@
     while( $row = DB::getRow() ){
         var_dump( $row );
     }
+    
+    
+    echo "<pre>-------------------
+ Executed Query: " . DB::getExecutedQuery() . " 
+-------------------</pre>";

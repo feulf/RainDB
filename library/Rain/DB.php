@@ -188,8 +188,8 @@ class DB {
     
     
     /**
-    * Get the last inserted id of an insert query
-    */
+     * Get the last inserted id of an insert query
+     */
     static function getLastId() {
         return self::$link->lastInsertId();
     }
@@ -201,6 +201,15 @@ class DB {
      */
     static function getLastQuery(){
         return self::$last_query;
+    }
+    
+
+
+    /**
+     * Return the number of executed query
+     */
+    static function getExecutedQuery() {
+        return self::$nquery;
     }
 
 
