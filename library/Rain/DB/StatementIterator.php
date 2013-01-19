@@ -1,5 +1,7 @@
 <?php
 
+namespace Rain\DB
+
 class StatementIterator implements \Iterator{
     protected $statement, $key = 0, $value;
 
