@@ -245,8 +245,11 @@ class DB {
     
     
     /**
-    * Close mysql connection
-    */
+     * Close PDO connection
+     * execute this method to close the connection with the selected database
+     * and bear in mind that PHP Garbage Collector will close the connection anyway when the script end
+     * 
+     */
     public static function disconnect() {
         unset(self::$link);
     }
