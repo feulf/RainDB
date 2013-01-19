@@ -1,12 +1,19 @@
----------------
-RainFramework 3
----------------
+#RainFramework 3
 
 DB is a component of the RainFramework 3 that works as wrapper for the PDO class.
 
 ## Usage
 
-This class uses the `Singleton` Design Pattern to handle a databases.
+This class use Static methods to run the queries. Example:
+``` php
+use Rain\DB;
+
+// simple query
+DB::getRow("SELECT * FROM user LIMIT 1");
+
+// query with prepared statement to filter the input
+DB::getField("SELECT firstname FROM user WHERE user_id=:user_id", array(":user_id"=>$user_id) );
+```
 
 ### Installation
 
