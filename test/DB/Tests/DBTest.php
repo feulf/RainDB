@@ -1,24 +1,15 @@
 <?php
 
-
-// use the Rain namespace
 use Rain\DB;
-
-
-// set the include path
-\set_include_path(
-	BASE_DIR . DIRECTORY_SEPARATOR . 'library'
-	. PATH_SEPARATOR . \get_include_path()
-);
-
-
-// require Rain DB
-require "Rain/DB.php";
-
-
 
 class DBTest extends PHPUnit_Framework_TestCase
 {
+    
+    // count the total query executed
+    protected static $nquery = 0;
+
+
+
     function setup(){
         $this->config();
     }
@@ -36,21 +27,57 @@ class DBTest extends PHPUnit_Framework_TestCase
      * Test DB::query
      */
     function testQuery(){
+        self::$nquery++;
         $this->assertTrue( get_class( DB::query("SHOW DATABASES") ) == "PDOStatement" );
     }
-    
+
+
+    /**
+     * Test DB::getRow
+     */
+    function testGetField(){
+        self::$nquery++;
+        $field = DB::getField("SELECT title FROM content LIMIT 1");
+        $this->assertTrue( is_scalar($field) );
+    }
+
+
     /**
      * Test DB::getRow
      */
     function testGetRow(){
-        $row = DB::getRow("SHOW TABLES");
+        self::$nquery++;
+        $row = DB::getRow("SHOW DATABASES");
         $this->assertTrue( is_array($row) );
     }
 
+    
+    /**
+     * Test DB::getAll
+     */
+    function testGetAll(){
+        self::$nquery++;
+        $row = DB::getAll("SHOW DATABASES");
+        $this->assertTrue( is_array($row) && isset($row[0]) );
+    }
+
+    
+
+    /**
+     * Test DB::getExecutedQuery
+     */
+    function testExecutedQuery(){
+        $this->assertTrue( self::$nquery == DB::getExecutedQuery() );
+    }
+
+    /**
+     * Config the database
+     */
     function config(){
         $config = array(
             'config_dir' => 'config/',
-            'config_file'=> 'db.php'
+            'config_file'=> 'db.php',
+            'fetch_mode' => \PDO::FETCH_ASSOC // set the fetch_mode as associative array
         );
         DB::configure( $config );
     }

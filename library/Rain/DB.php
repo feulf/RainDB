@@ -20,7 +20,8 @@ class DB {
     // internal variables
     protected static $db,          // databases list
                      $link,        // database connection object
-                     $link_list;   // database connection object list
+                     $link_list,   // database connection object list
+                     $statement;   // PDO statement
     
     // report variables
     protected static $last_query,  // keep the last query
@@ -104,19 +105,35 @@ class DB {
     * @param string $query
     * @param array $field if you use PDO prepared query here you going to write the field
     */
-    public static function query($query = null, $field = array()) {
+    public static function query($query = null, $field = array() ) {
         try {
             self::$last_query = $query;
             self::$nquery++;
-            $statement = self::$link->prepare($query);
-            $statement->execute($field);
-            return $statement;
+            self::$statement = self::$link->prepare($query);
+            self::$statement->execute($field);
+            return self::$statement;
         } catch (PDOException $e) {
             error_reporting("Error!: " . $e->getMessage() . "<br/>", E_USER_ERROR);
         }
     }
     
-    
+
+
+    /**
+    * Get one field
+    *
+    * @param string $query
+    * @param array $field
+    * @return string
+    */
+    public static function getField($query = null, $field = array()) {
+        if( $query )
+            self::query($query, $field);
+        return self::$statement->fetchColumn(0);
+    }
+
+
+
     /**
     * Get one row
     *
@@ -124,11 +141,77 @@ class DB {
     * @param array $field
     * @return array
     */
-    static function getRow($query = null, $field = array()) {
-        return self::query($query, $field)->fetch(self::$conf['fetch_mode']);
+    public static function getRow($query = null, $field = array()) {
+        if( $query )
+            self::query($query, $field);
+        return self::$statement->fetch(self::$conf['fetch_mode']);
     }
     
     
+
+    /**
+    * Get a list of rows. Example:
+    *
+    * db::get_all("SELECT * FROM user")  => array(array('id'=>23,'name'=>'tim'),array('id'=>43,'name'=>'max') ... )
+    * db::get_all("SELECT * FROM user","id")  => array(23=>array('id'=>23,'name'=>'tim'),42=>array('id'=>43,'name'=>'max') ... )
+    * db::get_all("SELECT * FROM user","id","name")  => array(23=>'tim'),42=>'max' ...)
+    *
+    * @param string $query
+    * @param string $key
+    * @param string $value
+    * @param array $field
+    * @return array of array
+    */
+    public static function getAll($query = null, $field = array(), $key = null, $value = null) {
+        $rows = array();
+        if( $query )
+            self::query($query, $field);
+        
+        if ($result = self::$statement->fetchALL(self::$conf['fetch_mode'])) {
+            if (!$key){
+                return $result;
+            }
+            elseif (!$value){
+                foreach ($result as $row){
+                    $rows[$row[$key]] = $row;
+                }
+            }
+            else{
+                foreach ($result as $row){
+                    $rows[$row[$key]] = $row[$value];
+                }
+            }
+        }
+        return $rows;
+    }
+    
+    
+    
+    /**
+     * Get the last inserted id of an insert query
+     */
+    public static function getLastId() {
+        return self::$link->lastInsertId();
+    }
+
+    
+    
+    /**
+     * Return the last query executed
+     */
+    public static function getLastQuery(){
+        return self::$last_query;
+    }
+    
+
+
+    /**
+     * Return the number of executed query
+     */
+    public static function getExecutedQuery() {
+        return self::$nquery;
+    }
+
 
 
     /**
@@ -150,14 +233,27 @@ class DB {
     /**
      * Configure the settings
      */
-    static function configure( $setting, $value = null ) {
-        
+    public static function configure($setting, $value = null) {
         if (is_array($setting))
             foreach ($setting as $key => $value)
-                self::configure($key, $value);
-        else if (property_exists(__CLASS__, $setting))
-            self::$$setting = $value;
+                static::configure($key, $value);
+        else if (isset(static::$conf[$setting])) {
+            static::$conf[$setting] = $value;
+        }
     }
+    
+    
+    
+    /**
+     * Close PDO connection
+     * execute this method to close the connection with the selected database
+     * and bear in mind that PHP Garbage Collector will close the connection anyway when the script end
+     * 
+     */
+    public static function disconnect() {
+        unset(self::$link);
+    }
+
 
 
 }
