@@ -126,7 +126,7 @@ class DB {
     * @param array $field
     * @return string
     */
-    static function getField($query = null, $field = array()) {
+    public static function getField($query = null, $field = array()) {
         if( $query )
             self::query($query, $field);
         return self::$statement->fetchColumn(0);
@@ -141,7 +141,7 @@ class DB {
     * @param array $field
     * @return array
     */
-    static function getRow($query = null, $field = array()) {
+    public static function getRow($query = null, $field = array()) {
         if( $query )
             self::query($query, $field);
         return self::$statement->fetch(self::$conf['fetch_mode']);
@@ -162,7 +162,7 @@ class DB {
     * @param array $field
     * @return array of array
     */
-    static function getAll($query = null, $field = array(), $key = null, $value = null) {
+    public static function getAll($query = null, $field = array(), $key = null, $value = null) {
         $rows = array();
         if( $query )
             self::query($query, $field);
@@ -190,7 +190,7 @@ class DB {
     /**
      * Get the last inserted id of an insert query
      */
-    static function getLastId() {
+    public static function getLastId() {
         return self::$link->lastInsertId();
     }
 
@@ -199,7 +199,7 @@ class DB {
     /**
      * Return the last query executed
      */
-    static function getLastQuery(){
+    public static function getLastQuery(){
         return self::$last_query;
     }
     
@@ -208,7 +208,7 @@ class DB {
     /**
      * Return the number of executed query
      */
-    static function getExecutedQuery() {
+    public static function getExecutedQuery() {
         return self::$nquery;
     }
 
