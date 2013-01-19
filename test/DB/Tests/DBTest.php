@@ -73,7 +73,8 @@ class DBTest extends PHPUnit_Framework_TestCase
     function config(){
         $config = array(
             'config_dir' => 'config/',
-            'config_file'=> 'db.php'
+            'config_file'=> 'db.php',
+            'fetch_mode' => \PDO::FETCH_ASSOC // set the fetch_mode as associative array
         );
         DB::configure( $config );
     }

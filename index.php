@@ -11,6 +11,11 @@
     // init the database class
     DB::init();
     
+    
+    // set the fetch mode as Object
+    $config = array("fetch_mode"=>\PDO::FETCH_OBJ);
+    DB::configure( $config );
+    
 
     // execute query
     DB::query("SHOW DATABASES");
