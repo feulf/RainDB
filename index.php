@@ -16,6 +16,11 @@
     DB::query("SHOW DATABASES");
     
 
+    // getField
+    $field = DB::getField("SELECT title FROM content LIMIT 1");
+    var_dump( $field );
+
+    
     // getRow
     $row = DB::getRow("SHOW TABLES");
     var_dump( $row );

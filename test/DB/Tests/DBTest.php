@@ -38,7 +38,17 @@ class DBTest extends PHPUnit_Framework_TestCase
     function testQuery(){
         $this->assertTrue( get_class( DB::query("SHOW DATABASES") ) == "PDOStatement" );
     }
-    
+
+
+    /**
+     * Test DB::getRow
+     */
+    function testGetField(){
+        $field = DB::getField("SELECT title FROM content LIMIT 1");
+        $this->assertTrue( is_scalar($field) );
+    }
+
+
     /**
      * Test DB::getRow
      */

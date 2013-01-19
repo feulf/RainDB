@@ -120,6 +120,21 @@ class DB {
 
 
     /**
+    * Get one field
+    *
+    * @param string $query
+    * @param array $field
+    * @return string
+    */
+    static function getField($query = null, $field = array()) {
+        if( $query )
+            self::query($query, $field);
+        return self::$statement->fetchColumn(0);
+    }
+
+
+
+    /**
     * Get one row
     *
     * @param string $query
