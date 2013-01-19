@@ -8,6 +8,13 @@ This class use Static methods to run the queries. Example:
 ``` php
 use Rain\DB;
 
+// configure the class
+$config = array("config_dir"=>"config/");
+DB::configure( $config );
+
+// init the connection
+DB::init();
+
 // simple query
 DB::getRow("SELECT * FROM user LIMIT 1");
 
