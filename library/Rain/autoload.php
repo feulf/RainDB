@@ -9,7 +9,7 @@ spl_autoload_register( "RainFormAutoloader" );
 function RainFormAutoloader( $class ){
 
     // it only autoload class into the Rain scope
-    if( preg_match('#\\\Rain\\\|Rain\\\#', $class ) ){
+    if( preg_match('#Rain\\\DB#', $class ) ){
 
         // transform the namespace in path
         $path = str_replace("\\", DIRECTORY_SEPARATOR, $class );
