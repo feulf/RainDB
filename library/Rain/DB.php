@@ -32,7 +32,14 @@ class DB {
         "config_dir"              => "config/",
         "config_file"             => "db.php",
         "default_connection_name" => "dev",
-        "fetch_mode"              => \PDO::FETCH_ASSOC
+        "fetch_mode"              => \PDO::FETCH_ASSOC,
+        
+        // Iterator Mode
+        // -------------
+        // true: getAll will return an Iterator (suggested)
+        // false: getAll will return an Array
+        //
+        "iterator_mode"           => true
 
     );
 
@@ -162,7 +169,7 @@ class DB {
     
 
     /**
-    * Get a list of rows. Example:
+    * Get the result of a query in an Iterator, example:
     *
     * db::get_all("SELECT * FROM user")  => array(array('id'=>23,'name'=>'tim'),array('id'=>43,'name'=>'max') ... )
     * db::get_all("SELECT * FROM user","id")  => array(23=>array('id'=>23,'name'=>'tim'),42=>array('id'=>43,'name'=>'max') ... )
@@ -174,17 +181,39 @@ class DB {
     * @param array $field
     * @return array of array
     */
-    public static function getAll(
-        $query = null,
-        $field = array(),
-        $key = null,
-        $value = null
-    ) {
+    public static function getAll( $query = null, $field = array(), $key = null, $value = null ) {
         $rows = array();
         if( $query )
             self::query($query, $field);
-        
+
+        // return the iterator with the values
+        return new \Rain\DB\StatementIterator( self::$statement, self::$conf['fetch_mode'], $key, $value );
+    }
+    
+
+
+
+    /**
+    * Get the result of a query in an Array, example:
+    *
+    * db::get_all("SELECT * FROM user")  => array(array('id'=>23,'name'=>'tim'),array('id'=>43,'name'=>'max') ... )
+    * db::get_all("SELECT * FROM user","id")  => array(23=>array('id'=>23,'name'=>'tim'),42=>array('id'=>43,'name'=>'max') ... )
+    * db::get_all("SELECT * FROM user","id","name")  => array(23=>'tim'),42=>'max' ...)
+    *
+    * @param string $query
+    * @param string $key
+    * @param string $value
+    * @param array $field
+    * @return array of array
+    */
+    public static function getAllArray( $query = null, $field = array(), $key = null, $value = null ) {
+        $rows = array();
+        if( $query )
+            self::query($query, $field);
+
+        // If not it will return the entire results as an Array
         if ($result = self::$statement->fetchALL(self::$conf['fetch_mode'])) {
+            // return the array
             if (!$key){
                 return $result;
             } elseif (!$value){
@@ -192,9 +221,24 @@ class DB {
                     $rows[$row[$key]] = $row;
                 }
             } else {
-                foreach ($result as $row){
-                    $rows[$row[$key]] = $row[$value];
+                
+                // if the result is an array
+                if( \PDO::FETCH_ASSOC == self::$conf['fetch_mode'] ){
+                    foreach ($result as $row){
+                        $rows[$row[$key]] = $row[$value];
+                    }
                 }
+                // fetch mode object
+                elseif( \PDO::FETCH_OBJ == self::$conf['fetch_mode'] ){
+                    foreach ($result as $row){
+                        $rows[$row->$key] = $row->$value;
+                    }
+                }
+                else{
+                    // Fetch Mode not recognized exception
+                    throw new \Rain\DB\Exception\FetchModeException("Fetch Mode not supported by getAll");
+                }
+                
             }
         }
 
@@ -202,7 +246,7 @@ class DB {
     }
     
     
-    
+
     /**
      * Get the last inserted id of an insert query
      */
