@@ -58,9 +58,18 @@ class DBTest extends PHPUnit_Framework_TestCase
     function testGetAll(){
         self::$nquery++;
         $row = DB::getAll("SHOW DATABASES");
-        $this->assertTrue( is_array($row) && isset($row[0]) );
+        $this->assertTrue( $row instanceof \Iterator );
     }
 
+    
+    /**
+     * Test DB::getAllArray
+     */
+    function testGetAllArray(){
+        self::$nquery++;
+        $row = DB::getAllArray("SHOW DATABASES");
+        $this->assertTrue( sizeof($row)>=0 );
+    }
     
 
     /**
