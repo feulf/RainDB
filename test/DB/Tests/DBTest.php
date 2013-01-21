@@ -37,7 +37,7 @@ class DBTest extends PHPUnit_Framework_TestCase
      */
     function testGetField(){
         self::$nquery++;
-        $field = DB::getField("SELECT title FROM content LIMIT 1");
+        $field = DB::getField("SELECT firstname FROM user LIMIT 1");
         $this->assertTrue( is_scalar($field) );
     }
 
