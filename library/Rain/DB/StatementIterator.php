@@ -1,18 +1,26 @@
 <?php
 
-namespace Rain\DB
+// set the namespace
+namespace Rain\DB;
 
-class StatementIterator implements \Iterator{
-    protected $statement, $key = 0, $value;
+/**
+ * StatementIterator class iterates the result of the query to save memory
+ */
+class StatementIterator implements \Iterator
+{
+    protected $statement, $fetch_mode, $key = 0, $value;
+    protected $select_key, $select_value;
 
-    public function __construct(\PDOStatement $statement){
-        $this->statement = $statement;
+    public function __construct(\PDOStatement $statement, $fetch_mode, $key = null, $value = null){
+        $this->statement    = $statement;
+        $this->select_key   = $key;
+        $this->select_value = $value;
+        $this->fetch_mode   = $fetch_mode;
     }
 
     public function rewind(){
-        $this->key = 0;
         if ($this->statement->execute()) {
-            $this->value = $this->statement->fetch();
+            $this->iterate();
         } else {
             $this->value = false;
         }
@@ -27,7 +35,34 @@ class StatementIterator implements \Iterator{
     }
 
     public function next(){
-        $this->key++;
-        $this->value = $this->statement->fetch();
+        $this->iterate();
     }
+    
+    public function key(){
+        return $this->key;
+    }
+    
+    protected function iterate(){
+
+        // The value of the iterator is a selected field of the query
+        if( $this->select_value ){
+            // save the result field in $this->value
+            $field = $this->statement->fetchColumn(0);
+            $this->value = $field;
+                
+        }
+        else{
+            // save the result row in $this->value
+            $row = $this->statement->fetch( $this->fetch_mode );
+            $this->value = $row;
+        }
+        
+        if( $this->select_key )
+            $this->key = $row[ $this->select_key ];
+        else
+            $this->key++;
+
+        
+    }
+
 }
