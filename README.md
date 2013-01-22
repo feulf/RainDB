@@ -1,6 +1,6 @@
-#RainFramework 3
+#Rain DB component
 
-DB is a component of the RainFramework 3 that works as wrapper for the PDO class.
+Rain DB is a component of the RainFramework 3 that works as wrapper for the PDO class.
 
 ## Usage
 
@@ -42,5 +42,7 @@ To load the class file you can use composer or a PSR autoloader.
 After configurating the class you can initializate the library using the init method
 
 ```php
-Rain\DB::init();
+use Rain\DB;
+require "library/Rain/autload.php";
+DB::init();
 ```
