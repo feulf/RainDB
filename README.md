@@ -8,6 +8,9 @@ This class use Static methods to run the queries. Example:
 ``` php
 use Rain\DB;
 
+// include the autoloader
+require "library/Rain/autoload.php";
+
 // configure the class
 $config = array("config_dir"=>"config/");
 DB::configure( $config );
