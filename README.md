@@ -12,17 +12,13 @@ use Rain\DB;
 require "library/Rain/autoload.php";
 
 // configure the class
-$config = array("config_dir"=>"config/");
-DB::configure( $config );
+DB::configure( array("config_dir"=>"config/"); );
 
 // init the connection
 DB::init();
 
-// simple query
+// run a query get one row
 DB::getRow("SELECT * FROM user LIMIT 1");
-
-// query with prepared statement to filter the input
-DB::getField("SELECT firstname FROM user WHERE user_id=:user_id", array(":user_id"=>$user_id) );
 ```
 
 ### Installation
@@ -49,3 +45,8 @@ use Rain\DB;
 require "library/Rain/autload.php";
 DB::init();
 ```
+
+#### Road Map, todo list and wish list, all of it together!
+- select the type of return as array, object, or class (we may want to create a JSON, XML or YAML class with a method __toString )
+
+
