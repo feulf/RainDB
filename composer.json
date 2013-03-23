@@ -1,5 +1,5 @@
 {
-    "name": "rain/DB",
+    "name": "rain/db",
     "description": "Database class PDO wrapper",
     "authors": [
         {
