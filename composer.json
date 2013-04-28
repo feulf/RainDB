@@ -1,5 +1,5 @@
 {
-    "name": "rain/DB",
+    "name": "rain/db",
     "description": "Database class PDO wrapper",
     "authors": [
         {
@@ -7,7 +7,6 @@
             "email": "rainelemental@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
         "php":">=5.3.0"
     },
